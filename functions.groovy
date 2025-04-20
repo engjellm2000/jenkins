@@ -19,16 +19,19 @@ def durationTime(m1, m2) {
 }
 
 def findPodsFromName(String namespace, String name) {
-    podsAndImagesRaw = sh(
-        script: """
-            kubectl get pods -n ${namespace} --selector=app=${name} -o jsonpath='{range .items[*]}{.metadata.name}###'
-        """,
+    def podsAndImagesRaw = sh(
+        script: "kubectl get pods -n ${namespace} --selector=app=${name} -o jsonpath='{range .items[*]}{.metadata.name}###'",
         returnStdout: true
     ).trim()
-    wantedPods = podsAndImagesRaw.split('###')
 
-    return wantedPods
+    if (!podsAndImagesRaw) {
+        return []
+    }
+
+    def wantedPods = podsAndImagesRaw.split('###')
+    return wantedPods.findAll { it?.trim() } // removes empty strings
 }
+
 
 def notifySlack(text, channel, attachments) {
     // Get your own slack webhook url and token
