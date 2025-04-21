@@ -33,25 +33,23 @@ def findPodsFromName(String namespace, String name) {
 }
 
 
-def notifySlack(slackURL, text, channel, attachments) {
-    def jenkinsIcon = 'https://a.slack-edge.com/205a/img/services/jenkins-ci_72.png'
+// def notifySlack(slackURL, text, channel, attachments) {
+//     def jenkinsIcon = 'https://a.slack-edge.com/205a/img/services/jenkins-ci_72.png'
 
-    def payload = groovy.json.JsonOutput.toJson([
-        text: text,
-        channel: channel,
-        username: "jenkins",
-        icon_url: jenkinsIcon,
-        attachments: attachments
-    ])
+//     def payload = groovy.json.JsonOutput.toJson([
+//         text: text,
+//         channel: channel,
+//         username: "jenkins",
+//         icon_url: jenkinsIcon,
+//         attachments: attachments
+//     ])
 
-    // Run curl safely without leaking secrets
-    sh '''
-      curl -s -X POST "$SLACK_URL" \
-        -H "Cache-Control: no-cache" \
-        -H "Content-Type: application/json;charset=UTF-8" \
-        -d @payload.json
-    '''
-}
-
-
+//     // Run curl safely without leaking secrets
+//     sh '''
+//       curl -s -X POST "$SLACK_URL" \
+//         -H "Cache-Control: no-cache" \
+//         -H "Content-Type: application/json;charset=UTF-8" \
+//         -d @payload.json
+//     '''
+// }
 return this
