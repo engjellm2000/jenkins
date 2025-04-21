@@ -33,11 +33,10 @@ def findPodsFromName(String namespace, String name) {
 }
 
 
-def notifySlack(text, channel, attachments) {
-    def slackURL = credentials('SLACK_WEBHOOK_URL') // ID from Jenkins credentials
+def notifySlack(slackURL, text, channel, attachments) {
     def jenkinsIcon = 'https://a.slack-edge.com/205a/img/services/jenkins-ci_72.png'
 
-    def payload = JsonOutput.toJson([
+    def payload = groovy.json.JsonOutput.toJson([
         text: text,
         channel: channel,
         username: "jenkins",
@@ -45,12 +44,13 @@ def notifySlack(text, channel, attachments) {
         attachments: attachments
     ])
 
-    sh """
-        curl -s -X POST "${slackURL}" \
-        -H 'Cache-Control: no-cache' \
-        -H 'Content-Type: application/json;charset=UTF-8' \
-        -d '${payload}'
-    """
+    // Run curl safely without leaking secrets
+    sh '''
+      curl -s -X POST "$SLACK_URL" \
+        -H "Cache-Control: no-cache" \
+        -H "Content-Type: application/json;charset=UTF-8" \
+        -d @payload.json
+    '''
 }
 
 
